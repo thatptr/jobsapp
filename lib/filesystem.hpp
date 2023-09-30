@@ -61,5 +61,4 @@ struct file {
     return true;
   }
 };
-
 } // namespace jobs::file
