@@ -1,6 +1,5 @@
-#include "../lib/toml.hpp"
 #include <string>
+#include <toml.hpp>
 
 namespace toml {
-  std::string get_config(){}
 }
