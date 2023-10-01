@@ -1,5 +1,4 @@
 // Filesystem management
-
 #pragma once
 
 #include <fstream>
@@ -8,7 +7,7 @@
 #include <optional>
 #include <string>
 
-namespace jobs::file {
+namespace jobs {
 enum permissions {
   read,
   write,
@@ -19,12 +18,12 @@ struct file {
   std::string filename;
   enum permissions permisson;
 
-  file(std::string filename, enum permissions permissions) {
+  file(const std::string &filename, const enum permissions &permissions) {
     this->filename = filename;
     this->permisson = permissions;
   }
 
-  bool create_file(std::optional<std::string> text) {
+  const bool create_file(const std::optional<std::string> &text) {
     if (this->permisson == permissions::read)
       return 1;
 
@@ -44,7 +43,7 @@ struct file {
     append,
   };
 
-  bool add_to_file(std::string text, bool overwrite) {
+  const bool add_to_file(const std::string &text, const bool &overwrite) {
     std::ofstream file;
 
     if (this->permisson == permissions::read)
