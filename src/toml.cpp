@@ -1,14 +1,15 @@
 #pragma once
 
+#include <memory>
 #include <optional>
 #include <string>
-#include <memory>
 
 #include <sys/stat.h>
 #include <toml.hpp>
 
-#include <unistd.h>
 #include "../lib/filesystem.hpp"
+#include <toml/parser.hpp>
+#include <unistd.h>
 
 enum config_status {
   fresh,
@@ -54,9 +55,32 @@ public:
       return 1;
     }
 
-    std::unique_ptr<jobs::file> temp = std::make_unique<jobs::file>(this->config_file_path + "config.toml", jobs::permissions::all);
+    std::unique_ptr<jobs::file> temp = std::make_unique<jobs::file>(
+        this->config_file_path + "config.toml", jobs::permissions::all);
 
-    temp->create_file("[meta]\n autogen = true");
+    temp->create_file("autogen = true\n");
     return 0;
+  }
+
+  const std::string get_opt(const std::string &opt) {
+    auto data = toml::parse(this->config_file_path);
+    const std::string o = toml::find_or<std::string>(data, opt, "none");
+    return o;
+  }
+
+  void add_opt(const std::string &opt, const std::string &val) {
+    auto data = toml::parse(this->config_file_path);
+    data[opt] = val;
+  }
+
+  bool make_opt_default(const std::string &opt) {
+    auto data = toml::parse(this->config_file_path);
+
+    if (data.contains(opt)) {
+      data[opt] = "";
+      return false;
+    }
+
+    return true;
   }
 };
